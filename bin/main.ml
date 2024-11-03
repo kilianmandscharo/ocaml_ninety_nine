@@ -83,3 +83,31 @@ let flatten l =
 
 let () = List.iter (Printf.printf "%s ") (flatten [One "a"; Many [One "b"; Many [One "c" ;One "d"]; One "e"]]);;
 Printf.printf "\n";;
+
+(*8*)
+let compress l =
+    let rec aux (acc: string list) (l: string list) (last: string): (string list) =
+        match l with
+        | [] -> acc
+        | h::t -> aux (if h = last then acc else h::acc) t h
+    in
+    List.rev (aux [] l "")
+
+let () = List.iter (Printf.printf "%s ") (compress ["a"; "a"; "a"; "a"; "b"; "c"; "c"; "a"; "a"; "d"; "e"; "e"; "e"; "e"]);;
+Printf.printf "\n";;
+
+(*9*)
+let pack (l: string list): string list list =
+    let rec aux (acc: string list list) (l: string list) (curr: string list) =
+        match l, curr with
+        | [], l -> l::acc
+        | h::t, [] -> aux acc t (h::curr)
+        | h::t, a::_ -> if h = a then aux acc t (h::curr) else aux (curr::acc) t [h]
+    in
+    List.rev (aux [] l []);;
+
+let print_string_list l =
+    Printf.printf "[%s]" (String.concat ", " l)
+
+let () = List.iter print_string_list (pack ["a"; "a"; "a"; "a"; "b"; "c"; "c"; "a"; "a"; "d"; "d"; "e"; "e"; "e"; "e"]);;
+Printf.printf "\n";;
